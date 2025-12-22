@@ -1,7 +1,7 @@
  function getStarted() {
-            alert('Welcome! Redirecting to dashboard...');
+            alert('Welcome! Redirecting to login page...');
             // Add your redirect logic here
-            // window.location.href = 'dashboard.html';
+            window.location.href = 'login';
         }
 
         function learnMore() {
