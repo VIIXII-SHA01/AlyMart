@@ -9,3 +9,6 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('cover-login/login');
 });
+Route::get('/dashboard-admin', function () {
+    return view('for_admin/dashboard');
+});
