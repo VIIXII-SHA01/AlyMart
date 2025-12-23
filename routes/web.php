@@ -12,3 +12,9 @@ Route::get('/login', function () {
 Route::get('/dashboard-admin', function () {
     return view('for_admin/dashboard');
 });
+Route::get('/dashboard-cashier', function () {
+    return view('for_cashier/dashboard');
+});
+Route::get('/dashboard-inventory', function () {
+    return view('for_inventory_staff/dashboard');
+});
