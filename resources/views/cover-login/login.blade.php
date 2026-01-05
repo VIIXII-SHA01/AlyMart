@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - AlyMart Inventory Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,8 +20,8 @@
 
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="localhost/AlyMart">
-                    <i class="fas white fa-boxes" style="color: white;"></i> AlyMart
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    <i class="fas fa-boxes" style="color: white;"></i> AlyMart
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -52,19 +53,37 @@
                                 <p>Sign in to your AlyMart account</p>
                             </div>
 
-                            <form id="loginForm">
+                            <form id="loginForm" method="POST" action="{{ route('login') }}">
+                                @csrf
+                                
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                                
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+                                
                                 <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                                    <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
                                     <label for="email"><i class="fas fa-envelope me-2"></i>Email address</label>
                                 </div>
 
                                 <div class="form-floating">
-                                    <input type="password" class="form-control" id="password" placeholder="Password" required>
+                                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                                     <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
                                 </div>
 
                                 <div class="remember-me">
-                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <input class="form-check-input" name="remember" type="checkbox" id="rememberMe">
                                     <label class="form-check-label" for="rememberMe">
                                         Remember me
                                     </label>
@@ -75,7 +94,7 @@
                                 </button>
 
                                 <div class="forgot-password">
-                                    <a href="#" onclick="forgotPassword()">Forgot your password?</a>
+                                    <a href="{{ route('password.request') }}">Forgot your password?</a>
                                 </div>
                             </form>
                         </div>
@@ -84,7 +103,59 @@
             </div>
         </div>
     </div>
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <script src="js/login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'Login successful') {
+                    window.location.href = '{{ url("/dashboard") }}';
+                } else {
+                    showAlert(data.message || 'Login failed', 'danger');
+                }
+            })
+            .catch(error => {
+                showAlert('An error occurred. Please try again.', 'danger');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+        });
+        
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const form = document.getElementById('loginForm');
+            form.parentNode.insertBefore(alertDiv, form);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
 </body>
 </html>

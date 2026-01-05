@@ -13,6 +13,11 @@
             <a href="#"><i class="fas fa-bell"></i> Notifications</a>
             <a href="#"><i class="fas fa-users"></i> User Management</a>
             <a href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog"></i> Settings</a>
-            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
+    
+    <!-- Logout Form -->
+    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>

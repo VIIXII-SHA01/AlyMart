@@ -3,48 +3,43 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Useful if you want authentication
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class Users extends Authenticatable
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
-    // Table name (optional, Laravel uses 'users' by default)
     protected $table = 'users';
 
-    // Mass assignable fields
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'password',
         'role',
+        'status',
     ];
 
-    // Hidden fields for arrays or JSON
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Type casting
     protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * Automatically hash the password when setting it
-     */
     public function setPasswordAttribute($value)
     {
-        $this->attributes['password'] = bcrypt($value);
+        $this->attributes['password'] = Hash::make($value);
     }
 
-    /**
-     * Optional: Get full name
-     */
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
