@@ -6,7 +6,7 @@
     <title>Alymart Cashier Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/cashier-dashboard.css">
+    <link rel="stylesheet" href="{{ asset('css/cashier-dashboard.css') }}">  
     </head>
 <body>
     <!-- Sidebar -->
@@ -38,11 +38,16 @@
                         <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog"></i> Settings</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     </ul>
                 </div>
             </div>
         </div>
+        
+        <!-- Logout Form -->
+        <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
 
         <!-- POS Container -->
         <div class="pos-container">
@@ -112,7 +117,7 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings ni sya dre -->
     <div class="modal fade" id="settingsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -204,6 +209,6 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/cashier-dashboard.js"></script>
+    <script src="{{ asset('js/cashier-dashboard.js') }}"></script>
     </body>
 </html>
